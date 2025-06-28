@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
 use App\Http\Controllers\Controller;
+use App\Providers\RouteServiceProvider;
+use App\Models\User;
+use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Foundation\Auth\RegistersUsers;
 
 class RegisterController extends Controller
 {
@@ -28,7 +29,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
      * Create a new controller instance.
@@ -40,8 +41,6 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
-
-     
     /**
      * Get a validator for an incoming registration request.
      *
@@ -50,34 +49,21 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        $rules= [
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ];
-        return Validator::make($data,$rules);
+        return Validator::make($data, [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
     }
-
- 
-    // protected function showRegistrartionForm(){
-    //     return redirect()->route('login');
-    // }
-
-    //  protected function showRegistrationForm(){
-    //      return redirect()->route('login');
-    //  }
-
-  
 
     /**
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
-     * @return \App\User
+     * @return \App\Models\User
      */
     protected function create(array $data)
     {
-       // return redirect()->route('login');
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],

@@ -65,3 +65,7 @@ Route::group(['prefix'=>'passenger','middleware'=>['auth','passenger']],function
 
 
 
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
